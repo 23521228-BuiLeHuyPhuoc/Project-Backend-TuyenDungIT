@@ -50,3 +50,22 @@ if(error){
 }
 next();
 };
+export const loginValidate=(req:Request,res:Response,next:NextFunction)=>{
+    const schema=Joi.object({
+        email:Joi.string().email().required().messages({
+            'string.empty':'Email không được để trống!',
+            'string.email':'Email không hợp lệ!'
+        }),
+        password:Joi.string().required().messages({
+            'string.empty':'Password không được để trống!'
+        })
+    });
+    const {error}=schema.validate(req.body);
+    if(error){
+        return res.json({
+            message: error.details[0].message,
+            code: 'error'
+        })
+    }
+    next();
+};
