@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import AccountUser from "../models/account-user.model";
-
+import AccountCompany from "../models/account-company.model";
 export const checkLogin = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.token;
@@ -22,14 +22,10 @@ export const checkLogin = async (req: Request, res: Response) => {
       _id: id,
       email: email
     });
-    if(!existAccountUser){
-      res.clearCookie("token");
-      res.json({
-        code: "error",
-        message: "Token không hợp lệ!"
-      });
-      return;
-    }
+    const existAccountCompany = await AccountCompany.findOne({
+      _id: id,
+      email: email
+    });
     if(existAccountUser) {
       const infoUser = {
         id: existAccountUser.id,
@@ -44,9 +40,36 @@ export const checkLogin = async (req: Request, res: Response) => {
       });
       return;
     }
+    if(existAccountCompany) {
+      const infoCompany = {
+        id: existAccountCompany.id,
+        companyName: existAccountCompany.companyName,
+        email: existAccountCompany.email,
+      };
+
+      res.json({
+        code: "success",
+        message: "Token hợp lệ!",
+        infoCompany: infoCompany
+      });
+      return;
+    }
 
 
-  
+
+
+
+
+
+
+
+
+    // Nếu truyền xuống tận đây tức là cả User và Company đều không tồn tại
+    res.clearCookie("token");
+    res.json({
+      code: "error",
+      message: "Token không hợp lệ!"
+    });
 
   } catch (error) {
     res.clearCookie("token");

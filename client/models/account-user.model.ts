@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 const schema = new mongoose.Schema({
     fullName: String,
-    email: String,
+    email: {
+        type: String,
+        unique: true
+    },
     password: String
 },{
     timestamps: true

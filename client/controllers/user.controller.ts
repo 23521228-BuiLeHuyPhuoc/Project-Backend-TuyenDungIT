@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import accountUser from '../models/account-user.model';
 import bcrypt from 'bcryptjs';
 import { JsonWebTokenError } from 'jsonwebtoken';
