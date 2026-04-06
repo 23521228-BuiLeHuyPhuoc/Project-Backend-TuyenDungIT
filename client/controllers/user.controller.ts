@@ -5,6 +5,7 @@ import { JsonWebTokenError } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
+import { AccountRequest } from '../../interfaces/request.interface';
 export const registerPost=async (req:Request,res:Response)=>{
     const {fullName,email,password}=req.body;
     const existAccount=await accountUser.findOne({email});
@@ -66,4 +67,28 @@ export const loginPost=async (req:Request,res:Response)=>{
             code: 'success'
         })
     }
+}
+export const profilePatch=async(req:AccountRequest,res:Response)=>{
+    if(req.file)
+    {
+        req.body.avatar=req.file.path;
+    }
+    else{
+        delete req.body.avatar;
+    }
+    const updateAccount=await accountUser.updateOne({
+        _id:req.account._id
+    },req.body);
+    if(!updateAccount)
+    {
+        return res.json({
+            code:"error",
+            message:"Cập nhật thất bại"
+        })
+    }
+    res.json({
+        code:"success",
+        message:"Cập nhật thành công"
+    })
+
 }

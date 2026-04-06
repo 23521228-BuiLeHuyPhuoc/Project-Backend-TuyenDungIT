@@ -31,6 +31,8 @@ export const checkLogin = async (req: Request, res: Response) => {
         id: existAccountUser.id,
         fullName: existAccountUser.fullName,
         email: existAccountUser.email,
+        avatar:existAccountUser.avatar,
+        phone:existAccountUser.phone
       };
 
       res.json({
