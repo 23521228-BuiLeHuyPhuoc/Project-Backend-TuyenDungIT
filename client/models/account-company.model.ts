@@ -3,14 +3,20 @@ import mongoose from "mongoose";
 const schema = new mongoose.Schema(
   {
     companyName: String,
-    email: {
-      type: String,
-      unique: true
-    },
-    password: String
+    email: String,
+    password: String,
+    city: String,
+    address: String,
+    companyModel: String,
+    companyEmployees: String,
+    workingTime: String,
+    workOvertime: String,
+    description: String,
+    logo: String,
+    phone: String,
   },
   {
-    timestamps: true
+    timestamps: true, // Tự động sinh ra trường createdAt và updatedAt
   }
 );
 

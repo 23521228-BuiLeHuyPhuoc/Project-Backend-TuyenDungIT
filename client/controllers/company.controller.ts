@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import AccountCompany from '../models/account-company.model';
+import { AccountRequest } from '../../interfaces/request.interface';
+
 export const registerPost =async(req:Request,res:Response)=>{
     const {companyName,email,password}=req.body;
     const existAccount=await AccountCompany.findOne({email});
@@ -58,5 +60,29 @@ export const loginPost=async(req:Request,res:Response)=>{
     res.json({
         code:'success',
         message:'Đăng nhập thành công'
+    })
+}
+export const profilePatch=async (req:AccountRequest,res:Response)=>{
+    if(req.file){
+        req.body.logo=req.file.path;
+    }
+    else{
+        delete req.body.logo;
+    }
+    const existAccount=await AccountCompany.findOne({
+        _id:req.company.id
+    })
+    if(!existAccount){
+        return res.json({
+            code:'error',
+            message:"Email không tồn tại"
+        })
+    }
+    await AccountCompany.updateOne({
+        _id:req.company.id
+    },req.body);
+    res.json({
+        code:'success',
+        message:'Cập nhật thành công'
     })
 }
