@@ -65,16 +65,6 @@ export const checkLogin = async (req: Request, res: Response) => {
       });
       return;
     }
-
-
-
-
-
-
-
-
-
-
     // Nếu truyền xuống tận đây tức là cả User và Company đều không tồn tại
     res.clearCookie("token");
     res.json({
