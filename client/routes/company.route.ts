@@ -24,6 +24,7 @@ router.post('/login',loginValidate,companyController.loginPost);
 
 router.post('/job/create',verifyTokenCompany,upload.array('images',12),jobController.createJobPost);
 
+router.get('/job/list',verifyTokenCompany,jobController.getListJobPost);
 router.patch('/profile',verifyTokenCompany,upload.single('logo'),companyController.profilePatch);
 
 export default router;

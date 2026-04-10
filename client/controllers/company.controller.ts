@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import AccountCompany from '../models/account-company.model';
 import { AccountRequest } from '../../interfaces/request.interface';
 import Job from '../models/job.model';
+import City from '../models/city.model';
 export const registerPost =async(req:Request,res:Response)=>{
     const {companyName,email,password}=req.body;
     const existAccount=await AccountCompany.findOne({email});
@@ -111,5 +112,44 @@ export const createJobPost =async(req:AccountRequest,res:Response)=>{
     res.json({
         code :"success",
         message:"Tạo mới công việc thành công"
+    })
+}
+export const getListJobPost=async(req:AccountRequest,res:Response)=>{
+    const find={
+        companyId:req.company.id
+    };
+    const page=req.query.page ? parseInt(req.query.page as string):1;
+    const limit=req.query.limit ? parseInt(req.query.limit as string):3;
+    const skip=(page-1)*limit;
+    const totalRecord=await Job.countDocuments(find);
+    const totalPage=Math.ceil(totalRecord/limit);
+    
+    const jobs=await Job.find(find).sort({
+        createdAt:"desc"
+    }).skip(skip).limit(limit);
+    const city= await City.findOne({
+        _id:req.company.city
+    })
+    const dataFinal=[];
+    for(const item of jobs)
+    {
+        dataFinal.push({
+             id: item.id,
+            companyLogo: req.company.logo,
+            title: item.title,
+            companyName: req.company.companyName,
+            salaryMin: item.salaryMin,
+            salaryMax: item.salaryMax,
+            position: item.position,
+            workingForm: item.workingForm,
+            companyCity: city?.name,
+            technologies: item.technologies
+
+        })
+    }
+    res.json({
+        code:"success",
+        jobs:dataFinal,
+        totalPage:totalPage
     })
 }
