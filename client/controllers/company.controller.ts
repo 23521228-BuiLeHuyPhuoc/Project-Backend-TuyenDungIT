@@ -153,3 +153,50 @@ export const getListJobPost=async(req:AccountRequest,res:Response)=>{
         totalPage:totalPage
     })
 }
+export const getDetailJob= async(req:AccountRequest,res:Response)=>{
+    const {id}=req.params;
+    const existJob=await Job.findOne({
+        _id:id,
+        companyId:req.company.id
+    })
+    if(!existJob){
+        return res.json({
+            code:'error',
+            message:"Công việc không tồn tại"
+        })
+    }
+    res.json({
+        code:"success",
+        jobDetail:existJob
+    })
+}
+export const editJobPatch= async(req:AccountRequest,res:Response)=>{
+    const {id}=req.params;
+    const existJob=await Job.findOne({
+        _id:id,
+        companyId:req.company.id
+    })
+    if(!existJob){
+        return res.json({
+            code:'error',
+            message:"Công việc không tồn tại"
+        })
+    }
+    req.body.salaryMin=req.body.salaryMin ? parseInt(req.body.salaryMin):0;
+    req.body.salaryMax=req.body.salaryMax ? parseInt(req.body.salaryMax):0;
+    req.body.technologies=req.body.technologies ? req.body.technologies.split(", "):[];
+    if(req.files)
+    {
+        for(const file of req.files as any)
+        {
+            req.body.images.push(file.path);
+        }
+    }
+    await Job.updateOne({
+        _id:id
+    },req.body);
+    res.json({
+        code:'success',
+        message:'Cập nhật thành công'
+    })
+}
