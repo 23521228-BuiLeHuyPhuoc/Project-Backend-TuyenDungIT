@@ -25,8 +25,12 @@ router.post('/login',loginValidate,companyController.loginPost);
 router.post('/job/create',verifyTokenCompany,upload.array('images',12),jobController.createJobPost);
 
 router.get('/job/list',verifyTokenCompany,jobController.getListJobPost);
+
 router.get('/job/edit/:id',verifyTokenCompany,jobController.getDetailJob);
+
 router.patch('/job/edit/:id',verifyTokenCompany,upload.array('images',12),jobController.editJobPatch);
+
 router.patch('/profile',verifyTokenCompany,upload.single('logo'),companyController.profilePatch);
 
+router.delete('/job/delete/:id',verifyTokenCompany,jobController.deleteJobPost);
 export default router;

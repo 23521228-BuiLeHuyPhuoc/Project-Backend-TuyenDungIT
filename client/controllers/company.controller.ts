@@ -200,3 +200,23 @@ export const editJobPatch= async(req:AccountRequest,res:Response)=>{
         message:'Cập nhật thành công'
     })
 }
+export const deleteJobPost= async(req:AccountRequest,res:Response)=>{
+    const {id}=req.params;
+    const existJob=await Job.findOne({
+        _id:id,
+        companyId:req.company.id
+    })
+    if(!existJob){
+        return res.json({
+            code:'error',
+            message:"Công việc không tồn tại"
+        })
+    }
+    await Job.deleteOne({
+        _id:id
+    });
+    res.json({
+        code:'success',
+        message:'Xóa thành công'
+    })
+}
