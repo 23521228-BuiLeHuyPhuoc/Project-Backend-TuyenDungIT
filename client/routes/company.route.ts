@@ -33,4 +33,10 @@ router.patch('/job/edit/:id',verifyTokenCompany,upload.array('images',12),jobCon
 router.patch('/profile',verifyTokenCompany,upload.single('logo'),companyController.profilePatch);
 
 router.delete('/job/delete/:id',verifyTokenCompany,jobController.deleteJobPost);
+router.get(
+  '/list', 
+  companyController.list
+);
+
+
 export default router;

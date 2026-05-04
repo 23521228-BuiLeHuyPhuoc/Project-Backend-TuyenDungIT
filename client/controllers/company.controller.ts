@@ -220,3 +220,54 @@ export const deleteJobPost= async(req:AccountRequest,res:Response)=>{
         message:'Xóa thành công'
     })
 }
+export const list = async (req: Request, res: Response) => {
+    try{
+  let limitItems = 12;
+  if(req.query.limitItems) {
+    limitItems = parseInt(`${req.query.limitItems}`);
+  }
+
+  const companyList = await AccountCompany
+    .find({})
+    .limit(limitItems)
+    .sort({
+      createdAt: "desc"
+    });
+
+  const companyListFinal = [];
+
+  for (const item of companyList) {
+    const dataItemFinal = {
+      id: item.id,
+      logo: item.logo,
+      companyName: item.companyName,
+      cityName: "",
+      totalJob: 0
+    };
+
+    // Thành phố
+    const city = await City.findOne({
+      _id: item.city
+    })
+    dataItemFinal.cityName = `${city?.name}`;
+
+    // Tổng số việc làm
+    const totalJob = await Job.countDocuments({
+      companyId: item.id
+    })
+    dataItemFinal.totalJob = totalJob;
+
+    companyListFinal.push(dataItemFinal);
+  }
+  console.log(companyListFinal);
+  res.json({
+    code: "success",
+    message: "Thành công!",
+    companyList: companyListFinal
+  })
+}
+catch (error) {
+    console.log("LỖI:", error);
+    res.json({code: 'error', message: error});
+  }
+}
