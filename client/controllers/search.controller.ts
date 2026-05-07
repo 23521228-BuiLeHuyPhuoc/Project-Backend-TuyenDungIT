@@ -27,8 +27,25 @@ export const search=async(req:Request,res:Response)=>{
         find.companyId = { $in: listIdAccountCompany };
       }
     }
-
-    
+    if(req.query.company){
+        const company=await AccountCompany.findOne({
+            companyName:req.query.company
+        })
+        if(company){
+            find.companyId=company.id;
+        }
+    }
+    if(req.query.keyword){
+        const keywordRegex=new RegExp(`${req.query.keyword}`,"i");
+       find["$or"]=[
+        {
+            title:keywordRegex
+        },
+        {
+            technologies:keywordRegex
+        }
+       ]
+    }
     const job=await Job.find(find).sort({
         createdAt:"desc"
     });
