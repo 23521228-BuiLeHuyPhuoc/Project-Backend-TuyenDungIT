@@ -53,6 +53,10 @@ export const search=async(req:Request,res:Response)=>{
     {
         find.position=req.query.position;
     }
+    if(req.query.workingFrom)
+    {
+        find.workingForm=req.query.workingFrom;
+    }
     
     let job:any=[];
     if(find)
