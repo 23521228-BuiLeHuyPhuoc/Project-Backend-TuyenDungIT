@@ -26,6 +26,9 @@ export const search=async(req:Request,res:Response)=>{
 
         find.companyId = { $in: listIdAccountCompany };
       }
+      else{
+        find.companyId=null;
+      }
     }
     if(req.query.company){
         const company=await AccountCompany.findOne({
@@ -46,9 +49,24 @@ export const search=async(req:Request,res:Response)=>{
         }
        ]
     }
-    const job=await Job.find(find).sort({
+    if(req.query.position)
+    {
+        find.position=req.query.position;
+    }
+    
+    let job:any=[];
+    if(find)
+    {
+    job=await Job.find(find).sort({
         createdAt:"desc"
     });
+}
+else{
+    return res.json({
+        code:"error",
+        message:"Vui lòng nhập tham số tìm kiếm"
+    })
+}
 
     for(const item of job)
     {
