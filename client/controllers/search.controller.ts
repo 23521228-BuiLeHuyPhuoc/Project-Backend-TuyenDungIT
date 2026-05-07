@@ -3,7 +3,10 @@ import Job from "../models/job.model";
 import City from "../models/city.model";
 import AccountCompany from "../models/account-company.model";
 export const search=async(req:Request,res:Response)=>{
-    const dataFinal=[];
+    const dataFinal = [];
+    let totalPage = 0;
+    let totalRecord = 0;
+
     if(Object.keys(req.query).length>0)
     {
         const find:any={};
@@ -57,13 +60,30 @@ export const search=async(req:Request,res:Response)=>{
     {
         find.workingForm=req.query.workingFrom;
     }
+    // Phân trang
+    const limitItems = 2;
+    let page = 1;
+    if(req.query.page) {
+      const currentPage = parseInt(`${req.query.page}`);
+      if(currentPage > 0) {
+        page = currentPage;
+      }
+    }
+    totalRecord = await Job.countDocuments(find);
+    totalPage = Math.ceil(totalRecord/limitItems);
+    if(page > totalPage && totalPage != 0) {
+      page = totalPage;
+    }
+    const skip = (page - 1) * limitItems;
+    // Hết Phân trang
+
     
     let job:any=[];
     if(find)
     {
     job=await Job.find(find).sort({
         createdAt:"desc"
-    });
+    }).limit(limitItems).skip(skip);
 }
 else{
     return res.json({
@@ -105,7 +125,9 @@ else{
     res.json({
         code:'success',
         message:'Thành công',
-        jobs:dataFinal
+        jobs:dataFinal,
+        totalPage:totalPage,
+        totalRecord:totalRecord
     })
     } else {
         res.json({
