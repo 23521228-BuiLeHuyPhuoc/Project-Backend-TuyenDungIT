@@ -1,10 +1,10 @@
-import{Router} from 'express';
+import { Router } from 'express';
 
 import * as companyController from '../controllers/company.controller';
 
 import { registerValidate } from '../validates/company.validate';
 
-import {loginValidate} from '../validates/company.validate'
+import { loginValidate } from '../validates/company.validate'
 
 import { verifyTokenCompany } from '../middlewares/auth.middleware';
 
@@ -18,25 +18,25 @@ const upload = multer({ storage: storage });
 
 const router = Router();
 
-router.post('/register', registerValidate,companyController.registerPost);
+router.post('/register', registerValidate, companyController.registerPost);
 
-router.post('/login',loginValidate,companyController.loginPost);
+router.post('/login', loginValidate, companyController.loginPost);
 
-router.post('/job/create',verifyTokenCompany,upload.array('images',12),jobController.createJobPost);
+router.post('/job/create', verifyTokenCompany, upload.array('images', 12), jobController.createJobPost);
 
-router.get('/job/list',verifyTokenCompany,jobController.getListJobPost);
+router.get('/job/list', verifyTokenCompany, jobController.getListJobPost);
 
-router.get('/job/edit/:id',verifyTokenCompany,jobController.getDetailJob);
+router.get('/job/edit/:id', verifyTokenCompany, jobController.getDetailJob);
 
-router.patch('/job/edit/:id',verifyTokenCompany,upload.array('images',12),jobController.editJobPatch);
+router.patch('/job/edit/:id', verifyTokenCompany, upload.array('images', 12), jobController.editJobPatch);
 
-router.patch('/profile',verifyTokenCompany,upload.single('logo'),companyController.profilePatch);
+router.patch('/profile', verifyTokenCompany, upload.single('logo'), companyController.profilePatch);
 
-router.delete('/job/delete/:id',verifyTokenCompany,jobController.deleteJobPost);
+router.delete('/job/delete/:id', verifyTokenCompany, jobController.deleteJobPost);
 router.get(
-  '/list', 
+  '/list',
   companyController.list
 );
-
+router.get('/detail/:id', companyController.detail);
 
 export default router;
