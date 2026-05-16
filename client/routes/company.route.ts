@@ -14,6 +14,8 @@ import { storage } from '../../helpers/cloudinary.helper';
 
 import * as jobController from '../controllers/company.controller';
 
+import * as authMiddleware from '../middlewares/auth.middleware';
+
 const upload = multer({ storage: storage });
 
 const router = Router();
@@ -39,4 +41,5 @@ router.get(
 );
 router.get('/detail/:id', companyController.detail);
 
+router.get('/cv/list', authMiddleware.verifyTokenCompany, companyController.listCV);
 export default router;

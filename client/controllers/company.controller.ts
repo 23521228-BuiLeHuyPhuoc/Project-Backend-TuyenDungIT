@@ -5,6 +5,7 @@ import AccountCompany from '../models/account-company.model';
 import { AccountRequest } from '../../interfaces/request.interface';
 import Job from '../models/job.model';
 import City from '../models/city.model';
+import CV from '../models/cv.model';
 export const registerPost = async (req: Request, res: Response) => {
     const { companyName, email, password } = req.body;
     const existAccount = await AccountCompany.findOne({ email });
@@ -333,4 +334,48 @@ export const detail = async (req: AccountRequest, res: Response) => {
             message: "ID không hợp lệ"
         })
     }
+}
+export const listCV = async (req: AccountRequest, res: Response) => {
+    const companyId = req.company.id;
+    const listJob = await Job.find({
+        companyId: companyId
+    });
+    const listJobId = listJob.map(item => item.id);
+    const listCV = await CV.find({
+        jobId: { $in: listJobId }
+    }).sort({
+        createdAt: "desc"
+    });
+    const dataFinal = [];
+    for (const item of listCV) {
+        const dataItemFinal = {
+            id: item.id,
+            jobTitle: "",
+            fullName: item.fullName,
+            email: item.email,
+            phone: item.phone,
+            jobSalaryMin: 0,
+            jobSalaryMax: 0,
+            jobWorkingForm: "",
+            jobPosition: "",
+            viewed: item.viewed,
+            status: item.status
+        }
+        const infoJob = await Job.findOne({
+            _id: item.jobId
+        });
+        dataItemFinal.jobTitle = infoJob.title;
+        dataItemFinal.jobSalaryMin = infoJob.salaryMin;
+        dataItemFinal.jobSalaryMax = infoJob.salaryMax;
+        dataItemFinal.jobWorkingForm = infoJob.workingForm;
+        dataItemFinal.jobPosition = infoJob.position;
+        dataFinal.push(dataItemFinal);
+    }
+
+    res.json({
+        code: "success",
+        message: "Lấy danh sách CV thành công!",
+        listCV: dataFinal
+    })
+
 }

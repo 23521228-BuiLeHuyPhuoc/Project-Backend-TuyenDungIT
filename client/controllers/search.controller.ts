@@ -56,9 +56,9 @@ export const search=async(req:Request,res:Response)=>{
     {
         find.position=req.query.position;
     }
-    if(req.query.workingFrom)
+    if(req.query.workingForm)
     {
-        find.workingForm=req.query.workingFrom;
+        find.workingForm=req.query.workingForm;
     }
     // Phân trang
     const limitItems = 2;
