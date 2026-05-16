@@ -50,4 +50,7 @@ router.patch('/cv/change-status',
   companyController.changeStatusCVPatch
 );
 
+router.delete('/cv/delete/:id', authMiddleware.verifyTokenCompany, companyController.deleteCVPatch);
+
+
 export default router;

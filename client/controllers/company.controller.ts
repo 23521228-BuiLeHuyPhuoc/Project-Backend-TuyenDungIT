@@ -492,3 +492,44 @@ export const changeStatusCVPatch = async (req: AccountRequest, res: Response) =>
         })
     }
 }
+export const deleteCVPatch = async (req: AccountRequest, res: Response) => {
+    try {
+        const id = req.params.id;
+        const companyId = req.company.id;
+        const infoCV = await CV.findOne({
+            _id: id,
+        })
+        if (!infoCV) {
+            res.json({
+                code: "error",
+                message: "CV không tồn tại"
+            })
+            return;
+        }
+        const infoJob = await Job.findOne({
+            _id: infoCV.jobId,
+            companyId: companyId
+        })
+        if (!infoJob) {
+            res.json({
+                code: "error",
+                message: "CV không tồn tại"
+            })
+            return;
+        }
+        await CV.deleteOne({
+            _id: id
+        });
+        res.json({
+            code: "success",
+            message: "Xoá CV thành công!"
+        })
+    }
+    catch (error) {
+        console.log("LỖI", error);
+        res.json({
+            code: "error",
+            message: error
+        })
+    }
+}
