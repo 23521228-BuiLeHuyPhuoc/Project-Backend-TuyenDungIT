@@ -1,4 +1,4 @@
-import{Router} from 'express';
+import { Router } from 'express';
 
 import * as userController from '../controllers/user.controller';
 
@@ -14,12 +14,14 @@ const upload = multer({ storage: storage });
 
 const router = Router();
 
-router.post('/register', 
-    userValidate.registerValidate, 
+router.post('/register',
+    userValidate.registerValidate,
     userController.registerPost);
 router.post('/login',
     userValidate.loginValidate,
     userController.loginPost);
-router.patch('/profile',verifyTokenUser,upload.single('avatar'),userController.profilePatch);
+router.patch('/profile', verifyTokenUser, upload.single('avatar'), userController.profilePatch);
+
+router.get('/cv/list', verifyTokenUser, userController.cvListGet);
 
 export default router;
