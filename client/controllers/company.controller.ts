@@ -445,3 +445,50 @@ export const detailCV = async (req: AccountRequest, res: Response) => {
     }
 
 }
+export const changeStatusCVPatch = async (req: AccountRequest, res: Response) => {
+    try {
+        const companyId = req.company.id;
+        const action = req.body.action;
+        const id = req.body.id;
+        const infoCV = await CV.findOne({
+            _id: id,
+        })
+        if (!infoCV) {
+            res.json({
+                code: "error",
+                message: "CV không tồn tại"
+            })
+            return;
+        }
+        const infoJob = await Job.findOne({
+            _id: infoCV.jobId,
+            companyId: companyId
+        })
+        if (!infoJob) {
+            res.json({
+                code: "error",
+                message: "CV không tồn tại"
+            })
+            return;
+        }
+
+        await CV.updateOne({
+            _id: id
+
+        }, {
+            status: action
+        })
+
+        res.json({
+            code: "success",
+            message: "Thành công!"
+        })
+    }
+    catch (error) {
+        console.log("LỖI", error);
+        res.json({
+            code: "error",
+            message: error
+        })
+    }
+}
