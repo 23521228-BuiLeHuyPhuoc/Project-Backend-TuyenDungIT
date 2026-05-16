@@ -364,12 +364,15 @@ export const listCV = async (req: AccountRequest, res: Response) => {
         const infoJob = await Job.findOne({
             _id: item.jobId
         });
-        dataItemFinal.jobTitle = infoJob.title;
-        dataItemFinal.jobSalaryMin = infoJob.salaryMin;
-        dataItemFinal.jobSalaryMax = infoJob.salaryMax;
-        dataItemFinal.jobWorkingForm = infoJob.workingForm;
-        dataItemFinal.jobPosition = infoJob.position;
-        dataFinal.push(dataItemFinal);
+        if (infoJob) {
+
+            dataItemFinal.jobTitle = `${infoJob.title}`;
+            dataItemFinal.jobSalaryMin = parseInt(`${infoJob.salaryMin}`);
+            dataItemFinal.jobSalaryMax = parseInt(`${infoJob.salaryMax}`);
+            dataItemFinal.jobWorkingForm = `${infoJob.workingForm}`;
+            dataItemFinal.jobPosition = `${infoJob.position}`;
+            dataFinal.push(dataItemFinal);
+        }
     }
 
     res.json({
